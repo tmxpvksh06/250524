@@ -1,0 +1,26 @@
+node_modules/
+.next/
+dist/
+build/
+.env
+.env.local
+.env.*.local
+coverage/
+*.log
+.DS_Store
+
+# Local reference materials and archived working copies
+Screenshot/
+0623/
+
+# Local editor / agent state
+.vscode/
+.idea/
+.agents/
+.codex/
+
+# OS and temporary files
+Thumbs.db
+Desktop.ini
+*.tmp
+*.temp
