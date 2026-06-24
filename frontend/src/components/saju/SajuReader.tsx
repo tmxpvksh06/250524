@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { ArrowDown, CalendarDays, LoaderCircle, LockKeyhole, Sparkles } from "lucide-react";
+import { invokeEdgeApi } from "@/lib/edge-api";
 
 type SajuProfile = {
   name: string;
@@ -128,13 +129,7 @@ export function SajuReader() {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api/saju/readings`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(profile),
-      });
-      const body = await response.json();
-      if (!response.ok) throw new Error(body.error ?? "정통사주 결과를 생성하지 못했습니다.");
+      const body = await invokeEdgeApi<Record<string, unknown>>("saju-reading", profile);
       sessionStorage.setItem("wolmyeongdang-saju-result", JSON.stringify(body));
       router.push("/saju/result");
     } catch (reason) {

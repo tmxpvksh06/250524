@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { LoaderCircle, LockKeyhole, RotateCcw, Sparkles } from "lucide-react";
-import { createClient, hasSupabaseBrowserEnv } from "@/lib/supabase/client";
+import { invokeEdgeApi } from "@/lib/edge-api";
 import { getReadingType, getTarotCard, type TarotCard } from "@/lib/tarot";
 import { TarotArtwork } from "@/components/tarot/TarotArtwork";
 
@@ -58,19 +58,7 @@ export function TarotResult({
     setError("");
 
     try {
-      let accessToken: string | undefined;
-      if (hasSupabaseBrowserEnv()) {
-        const { data } = await createClient().auth.getSession();
-        accessToken = data.session?.access_token;
-      }
-
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/api/tarot/readings`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-        },
-        body: JSON.stringify({
+      const body = await invokeEdgeApi<ApiResponse>("tarot-reading", {
           type: readingType.id,
           question: question?.slice(0, 300) ?? "",
           cards: cards.map(({ id, name, englishName, keyword, meaning, advice }) => ({
@@ -81,13 +69,16 @@ export function TarotResult({
             meaning,
             advice,
           })),
-        }),
       });
-      const body = await response.json();
-      if (!response.ok) throw new Error(body.error ?? "타로 결과를 생성하지 못했습니다.");
       setResult(body);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "타로 결과를 생성하지 못했습니다.");
+      setError(
+        reason instanceof TypeError
+          ? "타로 API에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요."
+          : reason instanceof Error
+            ? reason.message
+            : "타로 결과를 생성하지 못했습니다.",
+      );
     } finally {
       setLoading(false);
     }

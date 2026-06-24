@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { CalendarDays, Clock3, Cookie, LoaderCircle, MoonStar, Sparkles } from "lucide-react";
+import { invokeEdgeApi } from "@/lib/edge-api";
 
 type FortuneMode = "period" | "cookie" | "animal" | "star";
 
@@ -89,8 +90,6 @@ const modes: Array<{
   { id: "star", label: "별자리운세", description: "생일에 해당하는 별자리의 오늘 운세" },
 ];
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
-
 export function DailyFortuneReader() {
   const [mode, setMode] = useState<FortuneMode>("period");
   const [loading, setLoading] = useState(false);
@@ -115,15 +114,9 @@ export function DailyFortuneReader() {
     setError("");
 
     try {
-      const response = await fetch(`${apiUrl}/api/fortune/cookie`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const body = await invokeEdgeApi<{ result: CookieFortune }>("fortune-cookie", {
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Seoul",
-        }),
       });
-      const body = await response.json();
-      if (!response.ok) throw new Error(body.error ?? "포춘쿠키 메시지를 만들지 못했습니다.");
       setCookieResult(body.result);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "포춘쿠키 메시지를 만들지 못했습니다.");
@@ -142,10 +135,7 @@ export function DailyFortuneReader() {
     const form = new FormData(event.currentTarget);
 
     try {
-      const response = await fetch(`${apiUrl}/api/fortune/sign`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const body = await invokeEdgeApi<{ result: SignFortune }>("fortune-sign", {
           mode,
           name: String(form.get("name") ?? ""),
           birthDate: String(form.get("birthDate") ?? ""),
@@ -153,10 +143,7 @@ export function DailyFortuneReader() {
           gender: String(form.get("gender") ?? "unspecified"),
           currentFocus: String(form.get("currentFocus") ?? ""),
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Seoul",
-        }),
       });
-      const body = await response.json();
-      if (!response.ok) throw new Error(body.error ?? "운세를 생성하지 못했습니다.");
       setSignResult(body.result);
     } catch (reason) {
       setError(reason instanceof Error ? reason.message : "운세를 생성하지 못했습니다.");
@@ -175,10 +162,7 @@ export function DailyFortuneReader() {
     const form = new FormData(event.currentTarget);
 
     try {
-      const response = await fetch(`${apiUrl}/api/fortune/daily`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+      const body = await invokeEdgeApi<{ result: PeriodFortune }>("fortune-daily", {
           fortunePeriod: String(form.get("fortunePeriod") ?? "today"),
           name: String(form.get("name") ?? ""),
           birthDate: String(form.get("birthDate") ?? ""),
@@ -191,10 +175,7 @@ export function DailyFortuneReader() {
           currentMood: String(form.get("currentMood") ?? ""),
           question: String(form.get("question") ?? ""),
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Seoul",
-        }),
       });
-      const body = await response.json();
-      if (!response.ok) throw new Error(body.error ?? "기간별 운세를 생성하지 못했습니다.");
       setPeriodResult(body.result);
       setActiveArea("overall");
     } catch (reason) {

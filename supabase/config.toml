@@ -1,0 +1,4 @@
+project_id = "yarureongdang"
+
+[functions.api]
+verify_jwt = false
