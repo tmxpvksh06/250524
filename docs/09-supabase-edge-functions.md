@@ -12,11 +12,25 @@
 
 ## Vercel 환경변수
 
+Vercel에서 GitHub 저장소를 Import한 뒤 프로젝트의 Root Directory를
+`frontend`로 지정합니다. Framework Preset은 `Next.js`를 사용하고 나머지
+빌드 설정은 자동 감지값을 유지합니다.
+
 ```env
 NEXT_PUBLIC_SITE_URL=https://your-domain.vercel.app
 NEXT_PUBLIC_SUPABASE_URL=https://PROJECT_REF.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET=saju-images
+```
+
+위 네 변수는 Production, Preview, Development 환경에 등록합니다. 배포 도메인이
+확정되면 `NEXT_PUBLIC_SITE_URL`을 실제 도메인으로 변경하고 다시 배포합니다.
+
+Supabase Authentication의 URL Configuration에도 다음 값을 등록합니다.
+
+```text
+Site URL: https://your-domain.vercel.app
+Redirect URL: https://your-domain.vercel.app/auth/callback
 ```
 
 ## Supabase Secrets

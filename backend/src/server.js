@@ -9,10 +9,11 @@ const app = express();
 const port = Number(process.env.PORT ?? 4000);
 const model = process.env.OPENAI_MODEL ?? "gpt-5.4-mini";
 
-const hasSupabaseEnv = Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SECRET_KEY);
+const supabaseAdminKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SECRET_KEY;
+const hasSupabaseEnv = Boolean(process.env.SUPABASE_URL && supabaseAdminKey);
 const hasOpenAiEnv = Boolean(process.env.OPENAI_API_KEY);
 const supabase = hasSupabaseEnv
-  ? createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, {
+  ? createClient(process.env.SUPABASE_URL, supabaseAdminKey, {
       auth: {
         persistSession: false,
         autoRefreshToken: false,

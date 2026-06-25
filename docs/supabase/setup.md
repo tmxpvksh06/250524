@@ -15,9 +15,12 @@ NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET=saju-images
 백엔드 환경변수:
 
 ```env
-SUPABASE_URL=...
-SUPABASE_SECRET_KEY=...
+SUPABASE_URL=https://kpxagngxxbauusmvmnho.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
+
+서비스 역할 키와 OpenAI API 키는 Git 또는 Vercel의 `NEXT_PUBLIC_*` 변수에
+저장하지 않습니다. 운영 AI API는 Supabase Edge Function Secret을 사용합니다.
 
 ## 2. Auth
 
