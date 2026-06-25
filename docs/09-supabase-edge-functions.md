@@ -19,11 +19,12 @@ Vercel에서 GitHub 저장소를 Import한 뒤 프로젝트의 Root Directory를
 ```env
 NEXT_PUBLIC_SITE_URL=https://your-domain.vercel.app
 NEXT_PUBLIC_SUPABASE_URL=https://PROJECT_REF.supabase.co
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
+NEXT_PUBLIC_SUPABASE_FUNCTION_URL=https://PROJECT_REF.supabase.co/functions/v1/api
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ... 또는 sb_publishable_...
 NEXT_PUBLIC_SUPABASE_STORAGE_BUCKET=saju-images
 ```
 
-위 네 변수는 Production, Preview, Development 환경에 등록합니다. 배포 도메인이
+위 다섯 변수는 Production, Preview, Development 환경에 등록합니다. 배포 도메인이
 확정되면 `NEXT_PUBLIC_SITE_URL`을 실제 도메인으로 변경하고 다시 배포합니다.
 
 Supabase Authentication의 URL Configuration에도 다음 값을 등록합니다.
